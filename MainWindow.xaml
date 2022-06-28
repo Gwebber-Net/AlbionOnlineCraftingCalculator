@@ -1,0 +1,1774 @@
+﻿<Window x:Class="AlbionOnlineCraftingCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlbionOnlineCraftingCalculator"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Loaded="OnLoad" Closing="Window_Closing" WindowState="Maximized"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+
+    <Window.Resources>
+        <Style x:Key="TextStyle" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="Control.Foreground" Value="White"/>
+        </Style>
+        
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TextStyle}"/>
+
+        <Style  TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="5" Background="#CD8C57" BorderBrush="Black" BorderThickness="1" />
+                                            <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="Transparent"  BorderBrush="Black" BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="#CD8C57" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="Blue" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Background" Value="#1E2126"/>
+            <Setter Property="BorderBrush" Value="#1E2126"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+
+            
+        </Style>
+
+ 
+
+
+
+        <Style  TargetType="{x:Type ComboBoxItem}">
+                <Setter Property="Background" Value="#1E2126"/>
+                <Setter Property="BorderBrush" Value="#1E2126"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+
+            </Style>
+        
+
+
+    </Window.Resources>
+    <Grid Background="#1E2126">
+
+
+
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" >
+
+
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.3*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="0.2*"/>
+                <ColumnDefinition Width="1*"/>
+
+                <ColumnDefinition Width="1*"/>
+
+                <ColumnDefinition Width="0.3*"/>
+
+            </Grid.ColumnDefinitions>
+
+
+
+
+
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="1" Grid.Row="1" > Category</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="12" Grid.Column="2" Grid.Row="1" > SubCategory</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="12" Grid.Column="3" Grid.Row="1">Tier</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="12" Grid.Column="4" Grid.Row="1">Enchantment</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="12" Grid.Column="5" Grid.Row="1">Location</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Grid.Column="6" Grid.Row="1">Return Rate</TextBlock>
+
+
+
+            <ComboBox   Grid.Row="2" Grid.Column="1" Name="cmb_cat" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126" >
+                
+ 
+
+            </ComboBox>
+            <ComboBox   Grid.Row="2" Grid.Column="2" Name ="cmb_subcat" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126">
+                
+            </ComboBox>
+            <ComboBox  Grid.Row="2" Grid.Column="3" Name="cmb_tier" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126">
+                
+            </ComboBox>
+
+
+            <ComboBox   Grid.Row="2" Grid.Column="4" Name="cmb_enchantment" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126">
+                
+            </ComboBox>
+
+            <ComboBox   Grid.Row="2" Grid.Column="5" Name="cmb_location" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126">
+                
+            </ComboBox>
+
+            <ComboBox   Grid.Row="2" Grid.Column="6" Name="cmb_returnrate" SelectionChanged="cmb_SelectionChanged" Foreground="White" Background="#1E2126">
+                
+            </ComboBox>
+
+
+            <Button Name="Btn_PullDataAndCalculate" Grid.Column="7" Grid.Row="2"  Click="Btn_PullDataAndCalculate_Click" >
+                <Image Source="..\Img\Sync.png"></Image> 
+            </Button>
+            
+
+            <TextBlock Grid.Row="1" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12">Fee per 1000 nutrition</TextBlock>
+            <TextBox Name="Tb_Nutrition_Fee" Grid.Row="2" Grid.Column="8" MaxLines="1" PreviewTextInput="Tb_Nutrition_Fee_PreviewTextInput" TextAlignment="Center" > 750</TextBox>
+
+
+            <TextBlock Grid.Row="1" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12">Main Tree Spec</TextBlock>
+            <TextBox Name="Tb_Spec_MainTree" Grid.Row="2" Grid.Column="9" MaxLines="1" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Center"></TextBox>
+            
+
+        </Grid>
+
+
+        <Grid Grid.Row="1" ShowGridLines="False" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="0.1*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.1*"/>
+                <ColumnDefinition Width="0.8*"/>
+                <ColumnDefinition Width="1.4*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="0.1*"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" Background="#CD8C57">
+
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" Background="#CD8C57">
+
+            </Grid>
+
+            <Grid Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" Background="#CD8C57">
+
+            </Grid>
+
+            <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5" Background="#CD8C57">
+
+            </Grid>
+
+
+            <!--//////////////// ITEM1 //////////////////-->
+
+
+          <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0.2" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5">
+                
+            </Border>-->
+
+
+            
+            
+
+        <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item1" Background="Transparent" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item1" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item1_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item1_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+        </Grid>
+
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <!--<Image Name="Img_Item1" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"></Image>
+                <TextBlock Name="Tb_Item1_Name" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" ></TextBlock>
+                <TextBlock Name="Tb_Item1_Price" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" FontSize="14" ></TextBlock>-->
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item1_1" Background="Transparent" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="4*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+
+                        <Image Name="Img_Item1_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                        <TextBlock Name="Tb_Item1_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item1_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item1_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item1_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item1_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item1_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"> </TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item1_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item1_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item1_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item1_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"> </TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item1_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item1_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0" Margin="0,5,0,5"></Image>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item1_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item1_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item1_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+
+                </Grid>
+
+
+            </Grid>
+
+
+
+
+
+            <Grid Grid.Row="1" Grid.Column="3" ShowGridLines="False"  >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item1_Focus" Visibility="Hidden" Margin="2" >
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+                    
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item1_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+                    <TextBlock Name="Tb_Item1_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                    
+                </Grid>
+
+
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item1_Nutrition_Tax" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item1_SellOrderTax" Margin="2,0,0,0">0</TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item1_NutritionCost" Margin="2,0,0,0">0</TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+
+
+
+
+            </Grid>
+
+
+
+
+
+            <Grid Grid.Row="1" Grid.Column="4" ShowGridLines="False" Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                
+
+
+            </Grid>
+
+
+
+            <Grid Grid.Row="1" Grid.Column="4" ShowGridLines="False" Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="1" Grid.Column="5" ShowGridLines="False" Margin="0,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+
+
+            </Grid>
+
+
+
+
+
+            <!--//////////////// ITEM1 //////////////////-->
+
+
+
+
+
+            <!--//////////////// ITEM2 //////////////////-->
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+
+            <Grid Grid.Row="2" Grid.Column="1" Margin="2" Name="Grid_Item2" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item2" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item2_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item2_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="2" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item2_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item2_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item2_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item2_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item2_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item2_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item2_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item2_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item2_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item2_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item2_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item2_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item2_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item2_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item2_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item2_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item2_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="2" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item2_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item2_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item2_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item2_Nutrition_Tax" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item2_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item2_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+            </Grid>
+
+
+           
+            <!--//////////////// ITEM2 //////////////////-->
+
+
+
+
+            <!--//////////////// ITEM3 //////////////////-->
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+            <Grid Grid.Row="3" Grid.Column="1" Margin="2" Name="Grid_Item3" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item3" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item3_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item3_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="3" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item3_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item3_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item3_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item3_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item3_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item3_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item3_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item3_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item3_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item3_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item3_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item3_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item3_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item3_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item3_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item3_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item3_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="3" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item3_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item3_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item3_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+                
+                
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item3_Nutrition_Tax" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item3_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item3_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+
+            </Grid>
+
+
+          
+
+            <!--//////////////// ITEM3 //////////////////-->
+
+
+
+
+            <!--//////////////// ITEM4 //////////////////-->
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+            <Grid Grid.Row="4" Grid.Column="1" Margin="2" Name="Grid_Item4" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item4" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item4_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item4_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="4" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item4_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item4_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item4_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item4_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item4_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item4_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item4_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item4_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item4_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item4_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item4_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item4_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item4_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item4_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item4_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item4_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item4_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="4" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item4_Focus"  Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item4_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item4_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item4_Nutrition_Tax" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item4_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item4_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+            </Grid>
+
+
+         
+
+            <!--//////////////// ITEM4 //////////////////-->
+
+
+
+
+            <!--//////////////// ITEM5 //////////////////-->
+
+
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+            <Grid Grid.Row="5" Grid.Column="1" Margin="2" Name="Grid_Item5" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item5" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item5_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item5_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="5" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item5_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item5_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item5_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item5_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item5_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item5_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item5_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item5_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item5_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item5_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item5_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item5_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item5_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item5_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item5_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item5_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item5_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="5" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item5_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item5_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item5_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item5_Nutrition_Tax" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item5_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item5_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+
+            </Grid>
+
+
+           
+
+            <!--//////////////// ITEM5 //////////////////-->
+
+
+
+
+            <!--//////////////// ITEM6 //////////////////-->
+
+
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+            <Grid Grid.Row="6" Grid.Column="1" Margin="2" Name="Grid_Item6" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item6" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item6_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item6_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="6" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item6_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item6_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item6_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item6_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item6_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item6_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item6_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item6_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item6_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item6_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item6_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item6_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item6_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item6_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item6_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item6_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item6_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="6" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item6_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item6_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item6_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2"  Name="Grid_Item6_Nutrition_Tax" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item6_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item6_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+
+            </Grid>
+
+
+            <!--//////////////// ITEM6 //////////////////-->
+
+
+
+            <!--//////////////// ITEM7 //////////////////-->
+
+
+
+         <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+            <Grid Grid.Row="7" Grid.Column="1" Margin="2" Name="Grid_Item7" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item7" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item7_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item7_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="7" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item7_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item7_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item7_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item7_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item7_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item7_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item7_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item7_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item7_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item7_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item7_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item7_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item7_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item7_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item7_Journal_Full_Price"   ></TextBlock>
+                        <TextBlock Name="Tb_Item7_Journal_Empty_Price"   ></TextBlock>
+
+                        <TextBlock Name="Tb_Item7_Journal_FilledPercentage"   ></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="7" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item7_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item7_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item7_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2"  Name="Grid_Item7_Nutrition_Tax" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item7_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item7_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+
+            </Grid>
+
+
+           
+
+            <!--//////////////// ITEM7 //////////////////-->
+
+
+
+
+            <!--//////////////// ITEM8 //////////////////-->
+
+
+          <!--<Border BorderThickness="2" BorderBrush="SaddleBrown" Margin="0"  Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="5">
+
+            </Border>-->
+
+
+            <Grid Grid.Row="8" Grid.Column="1" Margin="2" Name="Grid_Item8" Background="Transparent" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image Name="Img_Item8" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"></Image>
+                <TextBlock Name="Tb_Item8_Name" Grid.Row="0" Grid.Column="1"  VerticalAlignment="Top" Margin="0,35,0,0" ></TextBlock>
+                <TextBlock Name="Tb_Item8_Price"  Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,0,35" ></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="8" Grid.Column="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+
+                </Grid.RowDefinitions>
+
+
+
+
+
+
+                <Grid Grid.Row="0" Grid.Column="0" Margin="2" Name="Grid_Item8_1" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item8_Ing1" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item8_Ing1" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item8_Ing1_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="2" Name="Grid_Item8_2" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item8_Ing2" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item8_Ing2" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item8_Ing2_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="0" Grid.Column="1" Margin="2" Name="Grid_Item8_3" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item8_Ing3" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item8_Ing3" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item8_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item8_4" Background="Transparent" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item8_Journal" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+                    
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                        <TextBlock Name="Tb_Item8_Journal_Full_Price" VerticalAlignment="Top"  Margin="0,5,0,0"></TextBlock>
+                        <TextBlock Name="Tb_Item8_Journal_Empty_Price"   Margin="0,5,0,0"></TextBlock>
+
+                        <TextBlock Name="Tb_Item8_Journal_FilledPercentage" VerticalAlignment="Bottom"  Margin="0,0,0,5"></TextBlock>
+                    </StackPanel>
+                    
+                </Grid>
+
+
+            </Grid>
+
+
+            <Grid Grid.Row="8" Grid.Column="3" ShowGridLines="False" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Column="0" Grid.Row="0"  Name="Grid_Item8_Focus" Visibility="Hidden" Margin="2">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+
+
+                    </Grid.ColumnDefinitions>
+
+
+                    <Grid.RowDefinitions>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" >Spec</TextBlock>
+                    <TextBox Name="Tb_Item8_CraftingSpec" Margin="0,0,0,5" VerticalAlignment="Bottom" Grid.Row="0" TextAlignment="Center"  Grid.Column="0"  TextChanged="Tb_Item_CraftingSpec_TextChanged" PreviewTextInput="Tb_Item_CraftingSpec_PreviewTextInput" MaxLength="3" MaxLines="1" Height="21" Width="30" Visibility="Hidden" HorizontalAlignment="Center"  ></TextBox>
+
+
+
+
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0" Grid.Row="0" Grid.Column="1" >Focus Cost</TextBlock>
+
+                    <TextBlock Name="Tb_Item8_FocusCost" VerticalAlignment="Bottom" Margin="0,0,0,7" Grid.Row="0" Grid.Column="1" MaxHeight="20" MaxWidth="30"></TextBlock>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0" ShowGridLines="False" Margin="2" Name="Grid_Item8_Nutrition_Tax" Visibility="Hidden"  >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Sell Order Tax</TextBlock>
+                        <TextBlock  Name="Tb_Item8_SellOrderTax" Margin="2,0,0,0"></TextBlock>
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock  >Nutrition Cost</TextBlock>
+                        <TextBlock  Name="Tb_Item8_NutritionCost" Margin="2,0,0,0"></TextBlock>
+
+                    </StackPanel>
+
+
+
+                </Grid>
+            </Grid>
+
+
+            
+
+            <!--//////////////// ITEM8 //////////////////-->
+
+
+
+
+
+
+           
+
+
+
+
+
+
+
+
+            
+
+
+            
+
+
+           
+
+
+
+            
+
+
+
+            
+
+
+           
+
+
+            
+
+
+
+
+        
+
+
+           
+
+
+
+            
+
+
+            
+
+
+           
+
+
+            
+
+
+
+           
+
+
+
+            
+
+
+
+
+        </Grid>
+
+    </Grid>
+</Window>
