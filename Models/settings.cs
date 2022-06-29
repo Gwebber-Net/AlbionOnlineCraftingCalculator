@@ -19,9 +19,11 @@ namespace AlbionOnlineCraftingCalculator
     public class UserSpecInput
     {
 
- 
 
-        public string Name { get; set; }
+
+        public string Name { get; set; } = "";
+
+        public int MainTree { get; set; } = 0;
 
         public List<int> Spec { get; set; } = new List<int>(); // Most of the time 7 items. Royal doesnt have a spec.
     }

@@ -169,7 +169,7 @@
 
 
             <TextBlock Grid.Row="1" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12">Main Tree Spec</TextBlock>
-            <TextBox Name="Tb_Spec_MainTree" Grid.Row="2" Grid.Column="9" MaxLines="1" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Center"></TextBox>
+            <TextBox Name="Tb_Spec_MainTree" Grid.Row="2" Grid.Column="9" MaxLines="1" PreviewTextInput="TextBox_PreviewTextInput" TextAlignment="Center">0</TextBox>
             
 
         </Grid>

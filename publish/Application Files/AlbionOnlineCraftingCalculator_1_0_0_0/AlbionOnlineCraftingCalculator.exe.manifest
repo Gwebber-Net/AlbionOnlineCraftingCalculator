@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="AlbionOnlineCraftingCalculator.exe" version="1.0.0.0" publicKeyToken="bf2242ac9a741e66" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="AlbionOnlineCraftingCalculator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="AlbionOnlineCraftingCalculator.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AlbionOnlineCraftingCalculator.exe" size="12927960">
+      <assemblyIdentity name="AlbionOnlineCraftingCalculator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>+Da1OsQtt1xVAYFA2rPa+6rY7E+TDTcgAbg7efneDqY=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="701992">
+      <assemblyIdentity name="Newtonsoft.Json" version="13.0.0.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>tiSUnfiw46YVP9+3MKfG9JkLZZLuDZIuF4hDPSdmEPM=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="AlbionOnlineCraftingCalculator.exe.config" size="189">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>R+Wg8QGvQVHX8T0ta/qbhH1bXkqY0fRnS3wBV3J0bN8=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=DESKTOP-HLEJ2UL\bart" issuerKeyHash="dc3f4aefc2450cc19c126c717c3a54a0c15351b3" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>YEFFJjLG2mPiHKmgkAHujz1zzRwT1Zd8wfdZc3OP6v4=</DigestValue></Reference></SignedInfo><SignatureValue>gvtA6jw45EyeVicOW4syPgkFRL++LtRRz+itHF39hgeEyfsW4qpUiWFs2TDPEv8qrmr4zFG2iH9i9aC8BAN52/8Vg8gigqVSPRDNOIupCRhPeXY9wmWqOo/PEzEO0RpLBA8styw9C7JHwhoJnfqh5+V0SWNlH7kVqVsAxoLAo2A=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>36erQ3ux2r1/fkSZ34e/L+IkV3120KRJFW88x4Cpl8LioQgc2ofJsSBr9vBuoS7pe/fe7xMeJrD/w/ZPey8kPFt06A8P+3waPz7+jXJ+iu7C0Tko25rwzhbtOeDRrGr3QwqAcO+Vz7oBbEd4JdHR6sPWTU2qoEr0blHOUAoKp7E=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="feea8f737359f7c17c97d5131ccd733d8fee0190a0a91ce263dac63226454160" Description="" Url=""><as:assemblyIdentity name="AlbionOnlineCraftingCalculator.exe" version="1.0.0.0" publicKeyToken="bf2242ac9a741e66" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=DESKTOP-HLEJ2UL\bart</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>bv7qR/okNvDgN62NItHOgNUbozjHd5OJYKBzZuDKtj4=</DigestValue></Reference></SignedInfo><SignatureValue>vtZda+d30wHeaZl0X3cnOmH5+/VSRYa6PWUlna13CVT5jLKkMmP0hOF44qY22H6VOBrSIZmAcrnVikTGX7USPzBC/LrzSGB8wC4L/b57+Fro2/rt5qEK5syIEYQiaqQpNnIktCIlq6Z0mD4bRyN93075Ui7DXzsIl+/7kE/pjDU=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>36erQ3ux2r1/fkSZ34e/L+IkV3120KRJFW88x4Cpl8LioQgc2ofJsSBr9vBuoS7pe/fe7xMeJrD/w/ZPey8kPFt06A8P+3waPz7+jXJ+iu7C0Tko25rwzhbtOeDRrGr3QwqAcO+Vz7oBbEd4JdHR6sPWTU2qoEr0blHOUAoKp7E=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB6TCCAVKgAwIBAgIQPgxMZjaXJZZBrduc02xv6TANBgkqhkiG9w0BAQsFADAzMTEwLwYDVQQDHigARABFAFMASwBUAE8AUAAtAEgATABFAEoAMgBVAEwAXABiAGEAcgB0MB4XDTIyMDYyODE0MzA0M1oXDTIzMDYyODIwMzA0M1owMzExMC8GA1UEAx4oAEQARQBTAEsAVABPAFAALQBIAEwARQBKADIAVQBMAFwAYgBhAHIAdDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA36erQ3ux2r1/fkSZ34e/L+IkV3120KRJFW88x4Cpl8LioQgc2ofJsSBr9vBuoS7pe/fe7xMeJrD/w/ZPey8kPFt06A8P+3waPz7+jXJ+iu7C0Tko25rwzhbtOeDRrGr3QwqAcO+Vz7oBbEd4JdHR6sPWTU2qoEr0blHOUAoKp7ECAwEAATANBgkqhkiG9w0BAQsFAAOBgQDcdpFUfMqyeCrRniouZGxt021asfqaaLdOxf4F0f3COVBbVWrVsn+RDntjdhPjDhzd0vaqeoIL3YoK3oFFM8vulLidccXFbyy9fYhkvgBenK1kfStMuXYn4mV6r3z2QrLJIehK9cWdK9MjdI9xMWtc0FYHzDbBZvn4f2JrmcrbCQ==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

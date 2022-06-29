@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +16,7 @@ namespace AlbionOnlineCraftingCalculator
     public partial class MainWindow : Window
     {
 
-        public bool debug = true;
+        public bool debug = false;
 
 
         List<Shopcategory> shopcategories = new List<Shopcategory>();
@@ -31,13 +32,22 @@ namespace AlbionOnlineCraftingCalculator
 
 
 
-        List<string> shopcategoriesToBeIgnored = new List<string>() { "mounts", "skillbooks", "resources", "token", "materials", "artefacts", "cityresources", "labourers", "furniture", "other", "products", "luxurygoods", "trophies", "farmables" };
+        List<string> shopcategoriesToBeIgnored = new List<string>() {"accessories", "mounts", "skillbooks", "resources", "token", "materials", "artefacts", "cityresources", "labourers", "furniture", "other", "products", "luxurygoods", "trophies", "farmables" };
         List<string> shopsubcategoriesToBeIgnored = new List<string>() { "vanity", "maps", "other", "fish", "fishingbait" };
+
+
+
+        public string OldCategory = "", NewCategory = "";
+        public string OldSubCategory = "", NewSubCategory = "";
 
 
 
         public MainWindow()
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("nl-NL");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("nl-NL");
+
+
             InitializeComponent();
         }
 
@@ -75,7 +85,12 @@ namespace AlbionOnlineCraftingCalculator
             }
             string[] vs = list.ToArray();
 
+
+
+
+
             cmb_cat.ItemsSource = vs;
+
 
             cmb_cat.SelectedIndex = 0;
             cmb_subcat.SelectedIndex = 0;
@@ -150,8 +165,8 @@ namespace AlbionOnlineCraftingCalculator
                 cmb_enchantment.SelectedItem != null &&
                 cmb_location.SelectedItem != null &&
                 cmb_returnrate.SelectedItem != null &&
-                Tb_Nutrition_Fee.Text != "" &&
-                Tb_Spec_MainTree.Text != ""
+                Tb_Nutrition_Fee.Text != "" //&&
+                                            //Tb_Spec_MainTree.Text != ""
                 )
 
             {
@@ -162,8 +177,10 @@ namespace AlbionOnlineCraftingCalculator
                 int enchantment = int.Parse(cmb_enchantment.SelectedItem.ToString());
                 string location = cmb_location.SelectedItem.ToString();
 
-                double returnrate = double.Parse(cmb_returnrate.SelectedItem.ToString());
 
+
+                // Make these "TryParse Methods"
+                double returnrate = double.Parse(cmb_returnrate.SelectedItem.ToString());
                 int nutritionFee = int.Parse(Tb_Nutrition_Fee.Text);
                 int mainTreeSpec = int.Parse(Tb_Spec_MainTree.Text);
 
@@ -184,23 +201,7 @@ namespace AlbionOnlineCraftingCalculator
                 }
 
 
-                if (!(category == "resources"))
-                {
-                    string n = simplifiedItemsV2[0].Uniquename;
-                    if (enchantment != 0)
-                    {
-                        n = n.Replace($"@{enchantment}", "");
-                    }
-
-
-                    journalitem = Methods.FindJournalForEndproduct(journalitems, n);
-
-                    // journalitem.Uniquename = journalitem.Uniquename + "_FULL";
-
-                    //MessageBox.Show(journalitem.Uniquename);
-
-
-                }
+                
 
 
 
@@ -208,19 +209,28 @@ namespace AlbionOnlineCraftingCalculator
                 {
                     List<string> allItemNamesForPrices = new List<string>();
 
+
+                    if (!(category == "resources") && !(category == "consumables"))
+                    {
+                        string n = simplifiedItemsV2[0].Uniquename;
+                        if (enchantment != 0)
+                        {
+                            n = n.Replace($"@{enchantment}", "");
+                        }
+                        journalitem = Methods.FindJournalForEndproduct(journalitems, n);
+                        allItemNamesForPrices = Methods.CreateItemListForAlbionDataApiV2(allItemNamesForPrices, Methods.FindSimplifiedItem(journalitem.Uniquename, SimplifiedItemsV2).Uniquename);
+                        allItemNamesForPrices = Methods.CreateItemListForAlbionDataApiV2(allItemNamesForPrices, Methods.FindSimplifiedItem(journalitem.EmptyName, SimplifiedItemsV2).Uniquename);
+                    }
+
+
                     for (int i = 0; i < simplifiedItemsV2.Count; i++)
                     {
-
-
                         string name = simplifiedItemsV2[i].Uniquename;
-
                         if (simplifiedItemsV2[i].Uniquename.Contains("_LEVEL1")) { name = name + "@1"; }
                         if (simplifiedItemsV2[i].Uniquename.Contains("_LEVEL2")) { name = name + "@2"; }
                         if (simplifiedItemsV2[i].Uniquename.Contains("_LEVEL3")) { name = name + "@3"; }
 
-
                         allItemNamesForPrices = Methods.CreateItemListForAlbionDataApiV2(allItemNamesForPrices, name);
-
 
                         for (int j = 0; j < simplifiedItemsV2[i].Craftingrequirements[0].Craftresources.Count; j++)
                         {
@@ -236,14 +246,7 @@ namespace AlbionOnlineCraftingCalculator
                         }
                     }
 
-
-
-                    allItemNamesForPrices = Methods.CreateItemListForAlbionDataApiV2(allItemNamesForPrices, Methods.FindSimplifiedItem(journalitem.Uniquename, SimplifiedItemsV2).Uniquename);
-                    allItemNamesForPrices = Methods.CreateItemListForAlbionDataApiV2(allItemNamesForPrices, Methods.FindSimplifiedItem(journalitem.EmptyName, SimplifiedItemsV2).Uniquename);
-
-
-
-
+                    
 
                     List<AlbionDataPriceModel> allItemPricesForCurrentRequest = Methods.GetMarketPrices(Methods.CreateAlbionDataUrl(new AlbionDataWebRequestModel() { Items = allItemNamesForPrices, Locations = location, Qualities = "1" }));
                     SimplifiedItemsV2 = Methods.UpdatePrices(allItemPricesForCurrentRequest, SimplifiedItemsV2);
@@ -268,7 +271,6 @@ namespace AlbionOnlineCraftingCalculator
                         Debug.WriteLine("''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''");
                     }
                 }
-
 
                 Methods.SaveToFile(SimplifiedItemsV2);
                 UIModelV2 uIModelV2 = new UIModelV2();
@@ -323,38 +325,76 @@ namespace AlbionOnlineCraftingCalculator
                         }
                     }
 
-                    int specialisationFromUser = 0;
-                    string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
-                    Debug.WriteLine($"Looking for {specName}");
-                    
 
 
-                
 
-                    
 
-                    if(priceUpdate)
+                    /////////////
+                    ////////////
+                    ////
+                    //// Putting together the information for the focus-use calculation.
+                    ////
+                    ////
+                    NewCategory = uIModel.InputParameters.Category;
+                    NewSubCategory = uIModel.InputParameters.SubCategory;
+
+
+
+                    if (OldCategory != NewCategory || OldSubCategory != NewSubCategory)
                     {
-                            UserSpecInput userSpec = Methods.FindSetting(specName, Settings.UserSpecInput);
-                        
-                            specialisationFromUser = userSpec.Spec[i];
-                            this.Dispatcher.Invoke(() =>
-                            {
-                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = specialisationFromUser.ToString();
-                            });
-                    }
-                    else
-                    {
+                        // The 2 main parameters have changed.
+                        // Meaning we have to reset all the spec textboxes.
                         this.Dispatcher.Invoke(() =>
                         {
-                            int.TryParse(UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text, out specialisationFromUser);
+                            UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = "0";
+                            Tb_Spec_MainTree.Text = "0";
                         });
                     }
 
-                    Settings = Methods.UpdateSetting(Settings, specName, i, specialisationFromUser);
-                    
+
+                    int specialisationValue = 0;
+                    int specialisationFromUserInput = 0;
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        int.TryParse(UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text, out specialisationFromUserInput);
+                    });
+
+                    string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
+                    //Debug.WriteLine("0__" + specName);
+                    UserSpecInput userSpec = Methods.FindSetting(specName, Settings.UserSpecInput);
+                    int specialisationFromSettingsFile = userSpec.Spec[i];
 
 
+                    if (specialisationFromUserInput != 0)
+                    {
+                        // We know the user has put in somthing
+                        specialisationValue = specialisationFromUserInput;
+                        userSpec.Spec[i] = specialisationValue;
+                        Settings = Methods.UpdateSpecialisations(Settings, specName, i, specialisationValue);
+                    }
+                    else
+                    {
+                        // We know the user does not have put in something.
+                        // Lets see if we have a setting from a previous session.
+                        if (specialisationFromSettingsFile != 0)
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                // Did the user put in a value other then 0 ?
+                                specialisationValue = specialisationFromSettingsFile;
+                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = specialisationValue.ToString();
+                            });
+                        }
+                        else
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                specialisationValue = 0;
+                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = 0.ToString();
+                            });
+                        }
+
+                    }
 
 
 
@@ -368,13 +408,12 @@ namespace AlbionOnlineCraftingCalculator
                         {
                             UniqueName = uIModel.simplifiedItems[i].Uniquename,
                             FocusCost = int.Parse(uIModel.simplifiedItems[i].Craftingrequirements[0].Craftingfocus),
-                            UserSpecInput = specialisationFromUser,
+                            UserSpecInput = specialisationValue,
                             ArtefactItem = artefactItem
 
                         };
                         focusCostCalculcationModels.Add(focusCostCalculcationModel);
                     }
-
 
                     if (priceUpdate)
                     {
@@ -443,9 +482,6 @@ namespace AlbionOnlineCraftingCalculator
                                     UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
                                     UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Nutrition_Tax").Visibility = Visibility.Visible;
 
-
-
-                                    //Tb_Item1_SellOrderTax
                                     UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_NutritionCost").Text = albionCraftingInformation.NutritionCost.ToString();
                                     UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_SellOrderTax").Text = albionCraftingInformation.SellorderCost.ToString();
 
@@ -454,28 +490,21 @@ namespace AlbionOnlineCraftingCalculator
 
                                 });
                             }
-
-
-
                         }
                         else
                         {
-
-
                             this.Dispatcher.Invoke(() =>
                             {
-
                                 UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Full_Price").Text = "";
+                                UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Empty_Price").Text = "";
+
                                 UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_FilledPercentage").Text = "";
                                 UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Journal").Source = null;
-
                             });
-
                         }
 
                         this.Dispatcher.Invoke(() =>
                         {
-
                             int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[0].Count;
                             int returned = albionCraftingInformation.Resources.ResourceReturnModels[0].Count;
                             int cost = investment - returned;
@@ -495,26 +524,16 @@ namespace AlbionOnlineCraftingCalculator
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Focus").Visibility = Visibility.Visible;
 
                             }
-
-
                             UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Name").Text = endProductName;
                             UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Price").Text = endProductPrice.ToString();// uIModel.simplifiedItems[i].AlbionDataPriceModels.SellPriceMin.ToString();
-
                             UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing1").Text = ing1Name + " * (" + investment.ToString() + "-" + returned.ToString() + ") = " + cost.ToString();
                             UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing1_Price").Text = ing1Price.ToString() + " * " + investment.ToString() + "-" + returned.ToString() + " = " + (cost * ing1Price); ;
-
-                            //UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_1").Background = new SolidColorBrush(Colors.AntiqueWhite);
-
-
 
                             BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(endProductName), UriKind.Absolute));
                             UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}").Source = bitmapImage;
                             bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(ing1Name), UriKind.Absolute));
-
                             UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
                             UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing1").Source = bitmapImage;
-
-
                         });
 
 
@@ -535,15 +554,9 @@ namespace AlbionOnlineCraftingCalculator
 
                                     UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing2").Text = "Artefact" + " * (" + investment.ToString() + "-" + returned.ToString() + ") = " + cost;
                                     UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing2_Price").Text = ing2Price.ToString() + " * " + investment.ToString() + "-" + returned.ToString() + " = " + (cost * ing2Price); ;
-
-
-
                                     BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(ing2Name), UriKind.Absolute));
-
                                     UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing2").Source = bitmapImage;
-                                    //UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_2").Background = new SolidColorBrush(Colors.AntiqueWhite);
                                     UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
-
                                 });
                             }
                             else
@@ -564,7 +577,6 @@ namespace AlbionOnlineCraftingCalculator
 
                                     BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(ing2Name), UriKind.Absolute));
                                     UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing2").Source = bitmapImage;
-                                    //UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_1").Background = new SolidColorBrush(Colors.AntiqueWhite);
                                     UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
 
                                 });
@@ -592,7 +604,6 @@ namespace AlbionOnlineCraftingCalculator
                                         string fileLocation = Methods.DownloadIfNotExistsLocallyV2(ing3Name);
                                         BitmapImage bitmapImage = new BitmapImage(new Uri(fileLocation, UriKind.Absolute));
                                         UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing3").Source = bitmapImage;
-                                        // UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.AntiqueWhite);
                                         UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
                                         UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
 
@@ -615,7 +626,6 @@ namespace AlbionOnlineCraftingCalculator
                                         UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing3_Price").Text = ing3Price.ToString() + " * " + investment.ToString() + "-" + returned.ToString() + " = " + (cost * ing3Price);
                                         BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(ing3Name), UriKind.Absolute));
                                         UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing3").Source = bitmapImage;
-                                        // UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.AntiqueWhite);
                                         UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
                                         UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
 
@@ -631,8 +641,6 @@ namespace AlbionOnlineCraftingCalculator
                                     UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing3").Source = null;
                                     UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.Transparent);
                                     UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
-                                    //UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Hidden;
-
                                 });
                             }
                         }
@@ -646,12 +654,13 @@ namespace AlbionOnlineCraftingCalculator
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_2").Background = new SolidColorBrush(Colors.Transparent);
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.Transparent);
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
-                                //UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Hidden;
-
                             });
                         }
                     }
                 }
+
+                OldCategory = NewCategory;
+                OldSubCategory = NewSubCategory;
 
                 if (priceUpdate)
                 {
@@ -681,19 +690,78 @@ namespace AlbionOnlineCraftingCalculator
                                 UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Hidden;
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Focus").Visibility = Visibility.Hidden;
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Nutrition_Tax").Visibility = Visibility.Hidden;
+                                UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Journal").Source = null;
+                                UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Full_Price").Text = "";
+                                UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Empty_Price").Text = "";
+
+                                UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_FilledPercentage").Text = "";
+                                UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Journal").Source = null;
                             });
                         }
                     }
                 }
 
-                for (int k = 0; k < uIModel.simplifiedItems.Count; k++)
+                if (priceUpdate)
                 {
-                    double focusCost = Methods.CalculateFocusCosts(uIModel.simplifiedItems[k].Uniquename, uIModel.InputParameters.MainTreeSpec, focusCostCalculcationModels);
+                    int mainTreeValue = 0;
+                    int mainTreeFromUserInput = 0;
                     this.Dispatcher.Invoke(() =>
                     {
-                        UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(k + 1).ToString()}_FocusCost").Text = focusCost.ToString();
+
+                        mainTreeFromUserInput = int.Parse(Tb_Spec_MainTree.Text); // Pull from textbox, instead of inputparamters, since input parameters is faulty, due to user sending in new request with old maintreeSpec.
                     });
+
+                    string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
+                    Debug.WriteLine("1__" + specName);
+                    //string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
+                    UserSpecInput userSpec = Methods.FindSetting(specName, Settings.UserSpecInput);
+                    int mainTreeFromSettingsFile = userSpec.MainTree;
+
+                    if (mainTreeFromUserInput != 0)
+                    {
+                        mainTreeValue = mainTreeFromUserInput;
+                        userSpec.MainTree = mainTreeValue;
+                        Settings = Methods.UpdateMainTree(Settings, specName, mainTreeValue);
+
+                    }
+                    else
+                    {
+                        if (mainTreeFromSettingsFile != 0)
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                mainTreeValue = mainTreeFromSettingsFile;
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    UIElementExtensions.FindControl<TextBox>(this, $"Tb_Spec_MainTree").Text = mainTreeValue.ToString();
+
+                                });
+                            });
+                        }
+                        else
+                        {
+                            this.Dispatcher.Invoke(() =>
+                            {
+                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Spec_MainTree").Text = 0.ToString();
+                                mainTreeValue = 0;
+                            });
+                        }
+                    }
+
+
+
+
+
+                    for (int k = 0; k < uIModel.simplifiedItems.Count; k++)
+                    {
+                        double focusCost = Methods.CalculateFocusCosts(uIModel.simplifiedItems[k].Uniquename, mainTreeValue, focusCostCalculcationModels);
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(k + 1).ToString()}_FocusCost").Text = focusCost.ToString();
+                        });
+                    }
                 }
+
             });
         }
 
@@ -780,7 +848,7 @@ namespace AlbionOnlineCraftingCalculator
 
             if (textBox.Text != "")
             {
-                UpdateRecipe(false);
+                //UpdateRecipe(false);
 
             }
 

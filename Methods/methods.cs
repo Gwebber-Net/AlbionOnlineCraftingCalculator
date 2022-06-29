@@ -24,7 +24,7 @@ namespace AlbionOnlineCraftingCalculator
         }
 
 
-        public static Setting UpdateSetting(Setting setting, string specName, int index, int specValue)
+        public static Setting UpdateSpecialisations(Setting setting, string specName, int index, int specValue)
         {
             for (int i = 0; i < setting.UserSpecInput.Count; i++)
             {
@@ -37,6 +37,18 @@ namespace AlbionOnlineCraftingCalculator
             return setting;
         }
 
+        public static Setting UpdateMainTree(Setting setting,string specname,int mainTree)
+        {
+            for(int i = 0; i < setting.UserSpecInput.Count; i++)
+            {
+                if (setting.UserSpecInput[i].Name == specname)
+                {
+                    setting.UserSpecInput[i].MainTree = mainTree;
+                    return setting;
+                }
+            }
+            return setting;
+        }
         public static UserSpecInput FindSetting(string settingName, List<UserSpecInput> settings)
         {
 
@@ -72,24 +84,27 @@ namespace AlbionOnlineCraftingCalculator
         public static Setting OpenSettings(List<Shopcategory> shopcategories, List<string> shopcategoriesToBeIgnored, List<string> shopsubcategoriesToBeIgnored)
         {
             string fullPath = $@".\settings.json";
-            Setting settings = new Setting();
+            Setting setting = new Setting();
             if (File.Exists(fullPath))
             {
                 using (StreamReader r = new StreamReader(@".\settings.json"))
                 {
                     string json = r.ReadToEnd();
-                    settings = JsonConvert.DeserializeObject<Setting>(json);
+                    setting = JsonConvert.DeserializeObject<Setting>(json);
                 }
             }
             else
             {
-                File.Create(fullPath);
-                Setting setting = GenerateSettingsFile(shopcategories, shopcategoriesToBeIgnored, shopsubcategoriesToBeIgnored);
+                //File.Create(fullPath);
+                 setting = GenerateSettingsFile(shopcategories, shopcategoriesToBeIgnored, shopsubcategoriesToBeIgnored);
+                File.WriteAllText(fullPath, JsonConvert.SerializeObject(setting, Formatting.Indented));
+
+                return setting;
             }
 
 
 
-            return settings;
+            return setting;
         }
 
         public static Setting GenerateSettingsFile(List<Shopcategory> shopcategories, List<string> shopcategoriesToBeIgnored, List<string> shopsubcategoriesToBeIgnored)
@@ -114,10 +129,23 @@ namespace AlbionOnlineCraftingCalculator
                             UserSpecInput setting = new UserSpecInput();
                             setting.Name = $"SPEC_{shopcategories[i].Id}_{shopcategories[i].Shopsubcategory[j].id}";
 
-                            for (int k = 0; k < 7; k++)
+
+                            if(setting.Name == "SPEC_consumables_cooked")
                             {
-                                setting.Spec.Add(0);
+                                for (int k = 0; k < 8; k++)
+                                {
+                                    setting.Spec.Add(0);
+                                }
                             }
+                            else
+                            {
+
+                                for (int k = 0; k < 7; k++)
+                                {
+                                    setting.Spec.Add(0);
+                                }
+                            }
+
 
                             s.Add(setting);
                         }
@@ -167,6 +195,8 @@ namespace AlbionOnlineCraftingCalculator
             // Nutrition
             double nutritionCost = 0;
 
+            // AlbionCraftingInformationModel for returning to the MainThread
+            AlbionCraftingInformation albionCraftingInformation = new AlbionCraftingInformation();
 
 
             for (int i = 0; i < simplifiedItemV2.Craftingrequirements[0].Craftresources.Count; i++)
@@ -268,13 +298,21 @@ namespace AlbionOnlineCraftingCalculator
             ///   Calculate the amount of silver generated with filling the journal.
             ///
             ////////////////////////////////////////////////////
-            double maxFame = journalitem.Maxfame;
-            double percentageFilled = (totalFameGained / maxFame);
-            double journalPrice = GetPriceFromItemsList(simplifiedItemsV2, journalitem.Uniquename, location);
-            //Debug.WriteLine($"Price for {journalitem.Uniquename} in calculation method:{journalPrice}");
-            double journalFilledPercentageValue = journalPrice * percentageFilled;
+            ///
+            if(journalitem != null)
+            {
+                double maxFame = journalitem.Maxfame;
+                double percentageFilled = (totalFameGained / maxFame);
+                double journalPrice = GetPriceFromItemsList(simplifiedItemsV2, journalitem.Uniquename, location);
+                //Debug.WriteLine($"Price for {journalitem.Uniquename} in calculation method:{journalPrice}");
+                double journalFilledPercentageValue = journalPrice * percentageFilled;
 
-            AlbionCraftingInformation albionCraftingInformation = new AlbionCraftingInformation();
+                albionCraftingInformation.Journal.JournalPrice = journalPrice;
+                albionCraftingInformation.Journal.JournalFilledPercentage = percentageFilled;
+                albionCraftingInformation.Journal.JournalFilledPercentageValue = journalFilledPercentageValue;
+            }
+            
+
             ////////////////////////////////////////////////////
             ///
             ///   Storing all calculated values inside the "AlbionCraftingInformation" model.
@@ -294,9 +332,8 @@ namespace AlbionOnlineCraftingCalculator
             albionCraftingInformation.Fame.ArtefactFameGained = artefactFameGained;
             albionCraftingInformation.Fame.EnchantmentFameGained = enchantmentFameGained;
 
-            albionCraftingInformation.Journal.JournalPrice = journalPrice;
-            albionCraftingInformation.Journal.JournalFilledPercentage = percentageFilled;
-            albionCraftingInformation.Journal.JournalFilledPercentageValue = journalFilledPercentageValue;
+          
+            
 
             return albionCraftingInformation;
 
@@ -655,109 +692,123 @@ namespace AlbionOnlineCraftingCalculator
 
 
 
-        public static List<Simpleitem> ConvertItemsToResourcesOnly()
-        {
-            string FileName = @"C:\Users\bart\Downloads\items.json";
-            string FileNameOutput = @"C:\Users\bart\Downloads\items_simpleitems.json";
+        //public static List<Simpleitem> ConvertItemsToResourcesOnly()
+        //{
+        //    string FileName = @"C:\Users\bart\Downloads\items.json";
+        //    string FileNameOutput = @"C:\Users\bart\Downloads\items_simpleitems.json";
 
 
 
-            AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
+        //    AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
 
-            List<Simpleitem> simpleitems = myDeserializedClass.Items.Simpleitem;
-
-
-            List<Simpleitem> NewList = new List<Simpleitem>();
-
-            foreach (Simpleitem item in simpleitems)
-            {
-                if (item.Shopcategory == "resources")
-                {
-
-                    if (item.Tier > 3)
-                    {
-                        switch (item.Shopsubcategory1)
-                        {
-                            case "wood":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "rock":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "ore":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "fiber":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "hide":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
+        //    List<Simpleitem> simpleitems = myDeserializedClass.Items.Simpleitem;
 
 
-                            case "planks":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
+        //    List<Simpleitem> NewList = new List<Simpleitem>();
 
-                            case "stoneblock":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "metalbar":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "cloth":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
-                            case "leather":
-                                {
-                                    NewList.Add(item);
-                                    break;
-                                }
+        //    foreach (Simpleitem item in simpleitems)
+        //    {
+        //        if (item.Shopcategory == "resources")
+        //        {
 
-
-                            case
-                        null:
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-
-                }
-            }
-
-            return NewList;
+        //            if (item.Tier > 3)
+        //            {
+        //                switch (item.Shopsubcategory1)
+        //                {
+        //                    case "wood":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "rock":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "ore":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "fiber":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "hide":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
 
 
-            //string json = JsonConvert.SerializeObject(NewList, Formatting.Indented);
+        //                    case "planks":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
 
-            //File.WriteAllText(FileNameOutput, json);
-        }
+        //                    case "stoneblock":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "metalbar":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "cloth":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+        //                    case "leather":
+        //                        {
+        //                            NewList.Add(item);
+        //                            break;
+        //                        }
+
+
+        //                    case
+        //                null:
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+
+        //        }
+        //    }
+
+        //    return NewList;
+
+
+        //    //string json = JsonConvert.SerializeObject(NewList, Formatting.Indented);
+
+        //    //File.WriteAllText(FileNameOutput, json);
+        //}
 
 
         public static List<Journalitem> ConvertItemsJournalitems()
         {
-            string FileName = @"C:\Users\bart\Downloads\items.json";
-            AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
+            //string FileName = @"C:\Users\bart\Downloads\items.json";
+            //AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
+            //string fileName = @".\simplifiedItemList.json";
+
+            //AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(fileName));
+
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "AlbionOnlineCraftingCalculator.Files.items.json";
+            string result = "";
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                result = reader.ReadToEnd();
+            }
+            AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(result);
 
 
             List<Journalitem> journals = new List<Journalitem>();
@@ -802,19 +853,32 @@ namespace AlbionOnlineCraftingCalculator
 
         public static List<Shopcategory> ConvertItemsToCategories()
         {
-            string FileName = @"C:\Users\bart\Downloads\items.json";
-            string FileNameOutput = @"C:\Users\bart\Downloads\items_shopcategories.json";
-            string testlocation = @"C:\Users\bart\Downloads\items_equipmentitems_precheck.json";
+            //string FileName = @"C:\Users\bart\Downloads\items.json";
+            //string FileNameOutput = @"C:\Users\bart\Downloads\items_shopcategories.json";
+            //string testlocation = @"C:\Users\bart\Downloads\items_equipmentitems_precheck.json";
 
 
-            AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
+            //AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(FileName));
+            //string fileName = @".\simplifiedItemList.json";
+
+            //AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(File.ReadAllText(fileName));
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "AlbionOnlineCraftingCalculator.Files.items.json";
+            string result = "";
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                result = reader.ReadToEnd();
+            }
+            AlbionItemDocument myDeserializedClass = JsonConvert.DeserializeObject<AlbionItemDocument>(result);
 
 
             List<Shopcategory> shopcategories = myDeserializedClass.Items.Shopcategories.Shopcategory;
 
 
 
-            File.WriteAllText(FileNameOutput, JsonConvert.SerializeObject(shopcategories, Formatting.Indented));
+            //File.WriteAllText(FileNameOutput, JsonConvert.SerializeObject(shopcategories, Formatting.Indented));
 
             return shopcategories;
         }
@@ -1225,7 +1289,7 @@ namespace AlbionOnlineCraftingCalculator
             double baseFocusCost = 0;
             double newFocusCost = 0;
 
-            Debug.WriteLine($"received {focusCostCalculcationModels.Count} focusCostCalculationModels ");
+            //Debug.WriteLine($"received {focusCostCalculcationModels.Count} focusCostCalculationModels ");
 
             // uniqueName is the item we are going to calculate it for.
 
@@ -1238,7 +1302,7 @@ namespace AlbionOnlineCraftingCalculator
 
                 if (focusCostCalculcationModels[i].UniqueName == uniqueName)
                 {
-                    Debug.WriteLine($"Found uniqueItem{uniqueName}");
+                    //Debug.WriteLine($"Found uniqueItem{uniqueName}");
 
 
                     baseFocusCost = focusCostCalculcationModels[i].FocusCost;
@@ -1278,12 +1342,12 @@ namespace AlbionOnlineCraftingCalculator
                     // Now we have the total focusCostefficiency points.
 
                     // Lets calculate the new focus cost value.
-                    Debug.WriteLine($"FocusCostEfficiency:{totalFocusCostEfficiency}");
-                    Debug.WriteLine($"baseCost:{baseFocusCost}");
+                    //Debug.WriteLine($"FocusCostEfficiency:{totalFocusCostEfficiency}");
+                    //Debug.WriteLine($"baseCost:{baseFocusCost}");
 
 
                     newFocusCost = baseFocusCost * Math.Pow(0.5, totalFocusCostEfficiency / 10000);
-                    Debug.WriteLine($"newFocusCost{newFocusCost}");
+                    //Debug.WriteLine($"newFocusCost{newFocusCost}");
                 }
             }
 
@@ -1402,22 +1466,31 @@ namespace AlbionOnlineCraftingCalculator
             {
                 var item = myDeserializedClass.Items.Consumableitem[i];
 
-                if (item.Tier > 3 && item.Enchantments != null)
+                if (item.Tier > 1)
                 {
                     simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
 
-                    for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+
+                    if(item.Enchantments != null)
                     {
-                        if (!item.Uniquename.Contains("DEBUG"))
+                        for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
                         {
+                            if (!item.Uniquename.Contains("DEBUG"))
+                            {
 
-                            simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
 
 
 
 
+                            }
                         }
                     }
+                    else
+                    {
+
+                    }
+                    
                 }
             }
 
