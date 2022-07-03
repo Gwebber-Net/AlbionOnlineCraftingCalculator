@@ -28,7 +28,7 @@ namespace AlbionOnlineCraftingCalculator
         {
             for (int i = 0; i < setting.UserSpecInput.Count; i++)
             {
-                if(setting.UserSpecInput[i].Name == specName)
+                if (setting.UserSpecInput[i].Name == specName)
                 {
                     setting.UserSpecInput[i].Spec[index] = specValue;
                     return setting;
@@ -37,9 +37,9 @@ namespace AlbionOnlineCraftingCalculator
             return setting;
         }
 
-        public static Setting UpdateMainTree(Setting setting,string specname,int mainTree)
+        public static Setting UpdateMainTree(Setting setting, string specname, int mainTree)
         {
-            for(int i = 0; i < setting.UserSpecInput.Count; i++)
+            for (int i = 0; i < setting.UserSpecInput.Count; i++)
             {
                 if (setting.UserSpecInput[i].Name == specname)
                 {
@@ -96,7 +96,7 @@ namespace AlbionOnlineCraftingCalculator
             else
             {
                 //File.Create(fullPath);
-                 setting = GenerateSettingsFile(shopcategories, shopcategoriesToBeIgnored, shopsubcategoriesToBeIgnored);
+                setting = GenerateSettingsFile(shopcategories, shopcategoriesToBeIgnored, shopsubcategoriesToBeIgnored);
                 File.WriteAllText(fullPath, JsonConvert.SerializeObject(setting, Formatting.Indented));
 
                 return setting;
@@ -130,7 +130,7 @@ namespace AlbionOnlineCraftingCalculator
                             setting.Name = $"SPEC_{shopcategories[i].Id}_{shopcategories[i].Shopsubcategory[j].id}";
 
 
-                            if(setting.Name == "SPEC_consumables_cooked")
+                            if (setting.Name == "SPEC_consumables_cooked")
                             {
                                 for (int k = 0; k < 8; k++)
                                 {
@@ -271,10 +271,20 @@ namespace AlbionOnlineCraftingCalculator
             ///   Calculate the value, for putting up the sell order for the endproduct.
             ///
             ////////////////////////////////////////////////////
+            ///\
+            ///
             int endProductPrice = GetPriceFromAlbionDataModel(simplifiedItemV2, location);
+
+            if (simplifiedItemV2.Craftingrequirements[0].Amountcrafted > 0)
+            {
+                endProductPrice = endProductPrice * simplifiedItemV2.Craftingrequirements[0].Amountcrafted;
+            }
+           
             double sellOrderPrice = Math.Floor(endProductPrice * SellorderTax);
 
-
+           
+                Debug.WriteLine($"Sellorder: {endProductPrice} * {SellorderTax} = {sellOrderPrice}");
+            
 
             ////////////////////////////////////////////////////
             ///
@@ -299,7 +309,7 @@ namespace AlbionOnlineCraftingCalculator
             ///
             ////////////////////////////////////////////////////
             ///
-            if(journalitem != null)
+            if (journalitem != null)
             {
                 double maxFame = journalitem.Maxfame;
                 double percentageFilled = (totalFameGained / maxFame);
@@ -311,7 +321,7 @@ namespace AlbionOnlineCraftingCalculator
                 albionCraftingInformation.Journal.JournalFilledPercentage = percentageFilled;
                 albionCraftingInformation.Journal.JournalFilledPercentageValue = journalFilledPercentageValue;
             }
-            
+
 
             ////////////////////////////////////////////////////
             ///
@@ -332,8 +342,8 @@ namespace AlbionOnlineCraftingCalculator
             albionCraftingInformation.Fame.ArtefactFameGained = artefactFameGained;
             albionCraftingInformation.Fame.EnchantmentFameGained = enchantmentFameGained;
 
-          
-            
+
+
 
             return albionCraftingInformation;
 
@@ -1439,26 +1449,166 @@ namespace AlbionOnlineCraftingCalculator
                 }
             }
 
+
+
+
+
             for (int i = 0; i < myDeserializedClass.Items.Equipmentitem.Count; i++)
             {
+
+
+
+
                 var item = myDeserializedClass.Items.Equipmentitem[i];
-                if (item.Tier > 3 && item.Enchantments != null)
+
+                if (!item.Uniquename.Contains("DEBUG"))
                 {
-                    simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
 
-                    for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                    if (item.Tier > 3 && item.Enchantments != null)
                     {
-                        if (!item.Uniquename.Contains("DEBUG"))
+
+                        if (item.Shopcategory == "gatherergear")
                         {
+                            if (item.Shopsubcategory1 == "fibergatherer_helmet" || item.Shopsubcategory1 == "fibergatherer_armor" || item.Shopsubcategory1 == "fibergatherer_shoes")// fiber
+                            {
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "fibergatherer", Enchantment = 0 });
 
-                            simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "fibergatherer", Enchantment = j + 1 });
 
 
 
 
+                                    }
+                                }
+                            }
+                            if (item.Shopsubcategory1 == "hidegatherer_helmet" || item.Shopsubcategory1 == "hidegatherer_armor" || item.Shopsubcategory1 == "hidegatherer_shoes") // hide                        {
+                            {
+
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "hidegatherer", Enchantment = 0 });
+
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "hidegatherer", Enchantment = j + 1 });
+
+
+
+
+                                    }
+                                }
+
+                            }
+                            if (item.Shopsubcategory1 == "rockgatherer_helmet" || item.Shopsubcategory1 == "rockgatherer_armor" || item.Shopsubcategory1 == "rockgatherer_shoes")// rock
+                            {
+
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "rockgatherer", Enchantment = 0 });
+
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "rockgatherer", Enchantment = j + 1 });
+
+
+
+
+                                    }
+                                }
+
+                            }
+                            if (item.Shopsubcategory1 == "woodgatherer_helmet" || item.Shopsubcategory1 == "woodgatherer_armor" || item.Shopsubcategory1 == "woodgatherer_shoes")// wood
+                            {
+
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "woodgatherer", Enchantment = 0 });
+
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "woodgatherer", Enchantment = j + 1 });
+
+
+
+
+                                    }
+                                }
+
+                            }
+                            else if (item.Shopsubcategory1 == "oregatherer_helmet" || item.Shopsubcategory1 == "oregatherer_armor" || item.Shopsubcategory1 == "oregatherer_shoes")// ore
+                            {
+
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "oregatherer", Enchantment = 0 });
+
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "oregatherer", Enchantment = j + 1 });
+
+
+
+
+                                    }
+                                }
+
+                            }
+                            else if (item.Shopsubcategory1 == "fishgatherer_helmet" || item.Shopsubcategory1 == "fishgatherer_armor" || item.Shopsubcategory1 == "fishgatherer_shoes")// fish
+                            {
+
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "fishgatherer", Enchantment = 0 });
+
+                                for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                                {
+                                    if (!item.Uniquename.Contains("DEBUG"))
+                                    {
+
+                                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = "fishgatherer", Enchantment = j + 1 });
+
+
+
+
+                                    }
+                                }
+
+                            }
                         }
+                        else
+                        {
+                            simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
+
+                            for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                            {
+                                if (!item.Uniquename.Contains("DEBUG"))
+                                {
+
+                                    simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
+
+
+
+
+                                }
+                            }
+                        }
+
+
+
+
+
+
+
                     }
                 }
+
             }
 
 
@@ -1471,7 +1621,7 @@ namespace AlbionOnlineCraftingCalculator
                     simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
 
 
-                    if(item.Enchantments != null)
+                    if (item.Enchantments != null)
                     {
                         for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
                         {
@@ -1490,7 +1640,7 @@ namespace AlbionOnlineCraftingCalculator
                     {
 
                     }
-                    
+
                 }
             }
 

@@ -219,7 +219,7 @@ namespace AlbionOnlineCraftingCalculator
         public string Swaptransaction { get; set; }
 
         [JsonProperty("@amountcrafted")]
-        public string Amountcrafted { get; set; }
+        public int Amountcrafted { get; set; }
 
         [JsonProperty("@forcesinglecraft")]
         public string Forcesinglecraft { get; set; }

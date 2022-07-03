@@ -443,7 +443,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_fibergatherer_helmet",
+      "Name": "SPEC_gatherergear_fibergatherer",
       "MainTree": 0,
       "Spec": [
         0,
@@ -456,7 +456,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_fishgatherer_helmet",
+      "Name": "SPEC_gatherergear_oregatherer",
       "MainTree": 0,
       "Spec": [
         0,
@@ -469,7 +469,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_hidegatherer_helmet",
+      "Name": "SPEC_gatherergear_woodgatherer",
       "MainTree": 0,
       "Spec": [
         0,
@@ -482,7 +482,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_oregatherer_helmet",
+      "Name": "SPEC_gatherergear_rockgatherer",
       "MainTree": 0,
       "Spec": [
         0,
@@ -495,7 +495,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_rockgatherer_helmet",
+      "Name": "SPEC_gatherergear_hidegatherer",
       "MainTree": 0,
       "Spec": [
         0,
@@ -508,241 +508,7 @@
       ]
     },
     {
-      "Name": "SPEC_gatherergear_woodgatherer_helmet",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fibergatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fishgatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_hidegatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_oregatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_rockgatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_woodgatherer_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fibergatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fishgatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_hidegatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_oregatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_rockgatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_woodgatherer_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fibergatherer_backpack",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_fishgatherer_backpack",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_hidegatherer_backpack",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_oregatherer_backpack",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_rockgatherer_backpack",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_gatherergear_woodgatherer_backpack",
+      "Name": "SPEC_gatherergear_fishgatherer",
       "MainTree": 0,
       "Spec": [
         0,

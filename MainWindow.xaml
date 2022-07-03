@@ -192,7 +192,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.1*"/>
                 <ColumnDefinition Width="0.8*"/>
-                <ColumnDefinition Width="1.4*"/>
+                <ColumnDefinition Width="1.8*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
@@ -309,6 +309,24 @@
                     <TextBlock Name="Tb_Item1_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"> </TextBlock>
 
                 </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item1_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item1_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item1_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item1_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
 
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item1_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
@@ -541,6 +559,25 @@
 
                 </Grid>
 
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item2_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item2_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item2_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item2_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
+
+
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item2_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -557,6 +594,12 @@
                         <TextBlock Name="Tb_Item2_Journal_FilledPercentage"   ></TextBlock>
                     </StackPanel>
                 </Grid>
+
+                
+
+
+
+
 
 
             </Grid>
@@ -717,6 +760,24 @@
 
                 </Grid>
 
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item3_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item3_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item3_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item3_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+                
+                
+                
+                
+                
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item3_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -896,6 +957,24 @@
 
                 </Grid>
 
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item4_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item4_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item4_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item4_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
+
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item4_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -1073,6 +1152,23 @@
                     <TextBlock Name="Tb_Item5_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
 
                 </Grid>
+
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item5_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item5_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item5_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item5_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
 
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item5_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
@@ -1252,6 +1348,23 @@
 
                 </Grid>
 
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item6_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item6_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item6_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item6_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item6_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -1428,6 +1541,23 @@
                     <TextBlock Name="Tb_Item7_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
 
                 </Grid>
+
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item7_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item7_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item7_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item7_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
 
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item7_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>
@@ -1606,6 +1736,24 @@
                     <TextBlock Name="Tb_Item8_Ing3_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
 
                 </Grid>
+
+
+                <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item8_5" Background="Transparent" Visibility="Hidden" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Image Name="Img_Item8_Ing4" MaxHeight="50" MaxWidth="50" VerticalAlignment="Center" Grid.Column="0"></Image>
+
+                    <TextBlock Name="Tb_Item8_Ing4" VerticalAlignment="Top" Grid.Column="1" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Name="Tb_Item8_Ing4_Price" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,0,5"></TextBlock>
+
+                </Grid>
+
+
+
 
                 <Grid Grid.Row="1" Grid.Column="1" Margin="2" Name="Grid_Item8_4" Background="Transparent" >
                     <Grid.ColumnDefinitions>

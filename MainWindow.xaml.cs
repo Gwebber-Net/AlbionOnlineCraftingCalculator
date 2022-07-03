@@ -16,7 +16,7 @@ namespace AlbionOnlineCraftingCalculator
     public partial class MainWindow : Window
     {
 
-        public bool debug = false;
+        public bool debug = true;
 
 
         List<Shopcategory> shopcategories = new List<Shopcategory>();
@@ -32,7 +32,7 @@ namespace AlbionOnlineCraftingCalculator
 
 
 
-        List<string> shopcategoriesToBeIgnored = new List<string>() {"accessories", "mounts", "skillbooks", "resources", "token", "materials", "artefacts", "cityresources", "labourers", "furniture", "other", "products", "luxurygoods", "trophies", "farmables" };
+        List<string> shopcategoriesToBeIgnored = new List<string>() { "accessories", "mounts", "skillbooks", "resources", "token", "materials", "artefacts", "cityresources", "labourers", "furniture", "other", "products", "luxurygoods", "trophies", "farmables" };
         List<string> shopsubcategoriesToBeIgnored = new List<string>() { "vanity", "maps", "other", "fish", "fishingbait" };
 
 
@@ -58,6 +58,41 @@ namespace AlbionOnlineCraftingCalculator
             shopcategories = Methods.ConvertItemsToCategories();
 
             journalitems = Methods.ConvertItemsJournalitems();
+
+           
+
+            // Here we need to alter the shopcategories.
+
+            // gatherergear stays,  but all of the subcategories that are in that, need to change to
+
+            //rockgatherer
+            //fibergatherer
+            //oregatherer
+            //woodgatherer
+            //hidegatherer
+            //fishgatherer
+
+            for(int i = 0; i < shopcategories.Count; i++)
+            {
+                if (shopcategories[i].Id == "gatherergear")
+                {
+                    // we found the gatherergear
+                    shopcategories[i].Shopsubcategory = new List<ShopSubCategory>();
+
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "fibergatherer" });
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "oregatherer" });
+
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "woodgatherer" });
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "rockgatherer" });
+
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "hidegatherer" });
+
+                    shopcategories[i].Shopsubcategory.Add(new ShopSubCategory() { id = "fishgatherer" });
+
+                }
+            }
+
+
 
             Settings = Methods.OpenSettings(shopcategories, shopcategoriesToBeIgnored, shopsubcategoriesToBeIgnored);
 
@@ -201,7 +236,7 @@ namespace AlbionOnlineCraftingCalculator
                 }
 
 
-                
+
 
 
 
@@ -246,7 +281,7 @@ namespace AlbionOnlineCraftingCalculator
                         }
                     }
 
-                    
+
 
                     List<AlbionDataPriceModel> allItemPricesForCurrentRequest = Methods.GetMarketPrices(Methods.CreateAlbionDataUrl(new AlbionDataWebRequestModel() { Items = allItemNamesForPrices, Locations = location, Qualities = "1" }));
                     SimplifiedItemsV2 = Methods.UpdatePrices(allItemPricesForCurrentRequest, SimplifiedItemsV2);
@@ -351,50 +386,67 @@ namespace AlbionOnlineCraftingCalculator
                         });
                     }
 
-
-                    int specialisationValue = 0;
-                    int specialisationFromUserInput = 0;
-                    this.Dispatcher.Invoke(() =>
+                    if (!(uIModel.simplifiedItems[i].Uniquename.Contains("ROYAL")))
                     {
-                        int.TryParse(UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text, out specialisationFromUserInput);
-                    });
-
-                    string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
-                    //Debug.WriteLine("0__" + specName);
-                    UserSpecInput userSpec = Methods.FindSetting(specName, Settings.UserSpecInput);
-                    int specialisationFromSettingsFile = userSpec.Spec[i];
-
-
-                    if (specialisationFromUserInput != 0)
-                    {
-                        // We know the user has put in somthing
-                        specialisationValue = specialisationFromUserInput;
-                        userSpec.Spec[i] = specialisationValue;
-                        Settings = Methods.UpdateSpecialisations(Settings, specName, i, specialisationValue);
-                    }
-                    else
-                    {
-                        // We know the user does not have put in something.
-                        // Lets see if we have a setting from a previous session.
-                        if (specialisationFromSettingsFile != 0)
+                        int specialisationValue = 0;
+                        int specialisationFromUserInput = 0;
+                        this.Dispatcher.Invoke(() =>
                         {
-                            this.Dispatcher.Invoke(() =>
-                            {
-                                // Did the user put in a value other then 0 ?
-                                specialisationValue = specialisationFromSettingsFile;
-                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = specialisationValue.ToString();
-                            });
+                            int.TryParse(UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text, out specialisationFromUserInput);
+                        });
+
+                        string specName = $"SPEC_{uIModel.InputParameters.Category}_{uIModel.InputParameters.SubCategory}";
+                        //Debug.WriteLine("0__" + specName);
+                        UserSpecInput userSpec = Methods.FindSetting(specName, Settings.UserSpecInput);
+                        int specialisationFromSettingsFile = userSpec.Spec[i];
+
+
+                        if (specialisationFromUserInput != 0)
+                        {
+                            // We know the user has put in somthing
+                            specialisationValue = specialisationFromUserInput;
+                            userSpec.Spec[i] = specialisationValue;
+                            Settings = Methods.UpdateSpecialisations(Settings, specName, i, specialisationValue);
                         }
                         else
                         {
-                            this.Dispatcher.Invoke(() =>
+                            // We know the user does not have put in something.
+                            // Lets see if we have a setting from a previous session.
+                            if (specialisationFromSettingsFile != 0)
                             {
-                                specialisationValue = 0;
-                                UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = 0.ToString();
-                            });
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    // Did the user put in a value other then 0 ?
+                                    specialisationValue = specialisationFromSettingsFile;
+                                    UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = specialisationValue.ToString();
+                                });
+                            }
+                            else
+                            {
+                                this.Dispatcher.Invoke(() =>
+                                {
+                                    specialisationValue = 0;
+                                    UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Text = 0.ToString();
+                                });
+                            }
+
+                        }
+
+                        if (!uIModel.simplifiedItems[i].Uniquename.Contains("ROYAL"))
+                        {
+                            FocusCostCalculcationModel focusCostCalculcationModel = new FocusCostCalculcationModel()
+                            {
+                                UniqueName = uIModel.simplifiedItems[i].Uniquename,
+                                FocusCost = int.Parse(uIModel.simplifiedItems[i].Craftingrequirements[0].Craftingfocus),
+                                UserSpecInput = specialisationValue,
+                                ArtefactItem = artefactItem
+
+                            };
+                            focusCostCalculcationModels.Add(focusCostCalculcationModel);
                         }
 
                     }
+                    
 
 
 
@@ -402,18 +454,7 @@ namespace AlbionOnlineCraftingCalculator
 
 
 
-                    if (!uIModel.simplifiedItems[i].Uniquename.Contains("ROYAL"))
-                    {
-                        FocusCostCalculcationModel focusCostCalculcationModel = new FocusCostCalculcationModel()
-                        {
-                            UniqueName = uIModel.simplifiedItems[i].Uniquename,
-                            FocusCost = int.Parse(uIModel.simplifiedItems[i].Craftingrequirements[0].Craftingfocus),
-                            UserSpecInput = specialisationValue,
-                            ArtefactItem = artefactItem
-
-                        };
-                        focusCostCalculcationModels.Add(focusCostCalculcationModel);
-                    }
+                    
 
                     if (priceUpdate)
                     {
@@ -477,6 +518,11 @@ namespace AlbionOnlineCraftingCalculator
                                     UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_FilledPercentage").Text = percentageFilled.ToString() + "% = " + Math.Round(filledPercentageValue, 0);
 
 
+                                    UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_5").Visibility = Visibility.Hidden;
+
+
+
+
                                     BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(uIModel.Journal.Uniquename), UriKind.Absolute));
                                     UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Journal").Source = bitmapImage;
                                     UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
@@ -508,7 +554,22 @@ namespace AlbionOnlineCraftingCalculator
                             int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[0].Count;
                             int returned = albionCraftingInformation.Resources.ResourceReturnModels[0].Count;
                             int cost = investment - returned;
-                            int endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                            int endProductPrice = 0;
+                            if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                            {
+                                endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                            }
+                            else
+                            {
+                                endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                            }
+
+
+
+
                             int ing1Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[0].Uniquename, uIModel.InputParameters.Location);
 
                             string endProductName = uIModel.simplifiedItems[i].Uniquename;
@@ -546,7 +607,17 @@ namespace AlbionOnlineCraftingCalculator
                                     int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[1].Count;
                                     int returned = albionCraftingInformation.Resources.ResourceReturnModels[1].Count;
                                     int cost = investment - returned;
-                                    int endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+                                    int endProductPrice = 0;
+                                    if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                                    {
+                                        endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                                    }
+                                    else
+                                    {
+                                        endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                                    }
                                     int ing2Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[1].Uniquename, uIModel.InputParameters.Location);
 
                                     string endProductName = uIModel.simplifiedItems[i].Uniquename;
@@ -566,7 +637,17 @@ namespace AlbionOnlineCraftingCalculator
                                     int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[1].Count;
                                     int returned = albionCraftingInformation.Resources.ResourceReturnModels[1].Count;
                                     int cost = investment - returned;
-                                    int endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+                                    int endProductPrice = 0;
+                                    if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                                    {
+                                        endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                                    }
+                                    else
+                                    {
+                                        endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                                    }
                                     int ing2Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[1].Uniquename, uIModel.InputParameters.Location);
 
                                     string endProductName = uIModel.simplifiedItems[i].Uniquename;
@@ -592,7 +673,17 @@ namespace AlbionOnlineCraftingCalculator
                                         int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[2].Count;
                                         int returned = albionCraftingInformation.Resources.ResourceReturnModels[2].Count;
                                         int cost = investment - returned;
-                                        int endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+                                        int endProductPrice = 0;
+                                        if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                                        }
+                                        else
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                                        }
                                         int ing3Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[2].Uniquename, uIModel.InputParameters.Location);
 
                                         string endProductName = uIModel.simplifiedItems[i].Uniquename;
@@ -616,7 +707,17 @@ namespace AlbionOnlineCraftingCalculator
                                         int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[2].Count;
                                         int returned = albionCraftingInformation.Resources.ResourceReturnModels[2].Count;
                                         int cost = investment - returned;
-                                        int endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+                                        int endProductPrice = 0;
+                                        if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                                        }
+                                        else
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                                        }
                                         int ing3Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[2].Uniquename, uIModel.InputParameters.Location);
 
                                         string endProductName = uIModel.simplifiedItems[i].Uniquename;
@@ -631,6 +732,49 @@ namespace AlbionOnlineCraftingCalculator
 
                                     });
                                 }
+
+                                if (uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources.Count > 3)
+                                {
+
+                                    this.Dispatcher.Invoke(() =>
+                                    {
+
+                                        int investment = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[3].Count;
+                                        int returned = albionCraftingInformation.Resources.ResourceReturnModels[3].Count;
+                                        int cost = investment - returned;
+                                        int endProductPrice = 0;
+                                        if (uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted > 1)
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location) * uIModel.simplifiedItems[i].Craftingrequirements[0].Amountcrafted;
+
+                                        }
+                                        else
+                                        {
+                                            endProductPrice = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Uniquename, uIModel.InputParameters.Location);
+
+                                        }
+                                        int ing4Price = Methods.GetPriceFromItemsList(SimplifiedItemsV2, uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[3].Uniquename, uIModel.InputParameters.Location);
+                                        string endProductName = uIModel.simplifiedItems[i].Uniquename;
+                                        string ing4Name = uIModel.simplifiedItems[i].Craftingrequirements[0].Craftresources[3].Uniquename;
+
+                                        UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing4").Text = ing4Name + " * (" + investment.ToString() + "-" + returned.ToString() + ") = " + cost;
+                                        UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Ing4_Price").Text = ing4Price.ToString() + " * " + investment.ToString() + "-" + returned.ToString() + " = " + (cost * ing4Price);
+                                        BitmapImage bitmapImage = new BitmapImage(new Uri(Methods.DownloadIfNotExistsLocallyV2(ing4Name), UriKind.Absolute));
+                                        UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing4").Source = bitmapImage;
+                                        UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
+                                        UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Visible;
+                                        UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Visibility = Visibility.Hidden;
+                                        UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_5").Visibility = Visibility.Visible;
+
+
+                                    });
+
+
+                                }
+
+
+
+
                             }
                             else
                             {
@@ -641,6 +785,8 @@ namespace AlbionOnlineCraftingCalculator
                                     UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Ing3").Source = null;
                                     UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.Transparent);
                                     UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
+                                    UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_5").Background = new SolidColorBrush(Colors.Transparent);
+
                                 });
                             }
                         }
@@ -654,6 +800,8 @@ namespace AlbionOnlineCraftingCalculator
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_2").Background = new SolidColorBrush(Colors.Transparent);
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_3").Background = new SolidColorBrush(Colors.Transparent);
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_4").Background = new SolidColorBrush(Colors.Transparent);
+                                UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_5").Background = new SolidColorBrush(Colors.Transparent);
+
                             });
                         }
                     }
@@ -690,6 +838,8 @@ namespace AlbionOnlineCraftingCalculator
                                 UIElementExtensions.FindControl<TextBox>(this, $"Tb_Item{(i + 1).ToString()}_CraftingSpec").Visibility = Visibility.Hidden;
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Focus").Visibility = Visibility.Hidden;
                                 UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_Nutrition_Tax").Visibility = Visibility.Hidden;
+                                UIElementExtensions.FindControl<Grid>(this, $"Grid_Item{(i + 1).ToString()}_5").Visibility = Visibility.Hidden;
+
                                 UIElementExtensions.FindControl<System.Windows.Controls.Image>(this, $"Img_Item{(i + 1).ToString()}_Journal").Source = null;
                                 UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Full_Price").Text = "";
                                 UIElementExtensions.FindControl<TextBlock>(this, $"Tb_Item{(i + 1).ToString()}_Journal_Empty_Price").Text = "";
