@@ -326,19 +326,6 @@
       ]
     },
     {
-      "Name": "SPEC_armor_unique_helmet",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
       "Name": "SPEC_armor_cloth_armor",
       "MainTree": 0,
       "Spec": [
@@ -378,19 +365,6 @@
       ]
     },
     {
-      "Name": "SPEC_armor_unique_armor",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
       "Name": "SPEC_armor_cloth_shoes",
       "MainTree": 0,
       "Spec": [
@@ -418,19 +392,6 @@
     },
     {
       "Name": "SPEC_armor_plate_shoes",
-      "MainTree": 0,
-      "Spec": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ]
-    },
-    {
-      "Name": "SPEC_armor_unique_shoes",
       "MainTree": 0,
       "Spec": [
         0,
@@ -637,6 +598,65 @@
         0,
         0
       ]
+    },
+    {
+      "Name": "SPEC_resources_cloth",
+      "MainTree": 0,
+      "Spec": [
+        0,
+        100,
+        100,
+        50,
+        90
+      ]
+    },
+    {
+      "Name": "SPEC_resources_leather",
+      "MainTree": 0,
+      "Spec": [
+        100,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "Name": "SPEC_resources_metalbar",
+      "MainTree": 0,
+      "Spec": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "Name": "SPEC_resources_stoneblock",
+      "MainTree": 0,
+      "Spec": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "Name": "SPEC_resources_planks",
+      "MainTree": 0,
+      "Spec": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     }
-  ]
+  ],
+  "LicenseInformation": {
+    "Username": "",
+    "Password": ""
+  }
 }

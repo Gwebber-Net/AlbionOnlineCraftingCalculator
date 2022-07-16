@@ -17,6 +17,38 @@ namespace AlbionOnlineCraftingCalculator
     public static class Methods
     {
 
+        public static bool IsArtifact(SimplifiedItemV2 simplifiedItem)
+        {
+            bool artefactItem = false;
+            if (simplifiedItem.Craftingrequirements[0].Craftresources.Count > 1)
+            {
+                if (simplifiedItem.Craftingrequirements[0].Craftresources[1].Uniquename.Contains("ARTEFACT") ||
+                simplifiedItem.Craftingrequirements[0].Craftresources[1].Uniquename.Contains("ROYAL"))
+                {
+                    return true;
+                }
+
+
+                if (simplifiedItem.Craftingrequirements[0].Craftresources.Count > 2)
+                {
+                    if (simplifiedItem.Craftingrequirements[0].Craftresources[2].Uniquename.Contains("ARTEFACT") ||
+            simplifiedItem.Craftingrequirements[0].Craftresources[2].Uniquename.Contains("ROYAL"))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+
+
+            return artefactItem;
+        }
+
+
+
+
+
+
         public static void SaveSettings(Setting settings)
         {
             string fullPath = $@".\settings.json";
@@ -137,6 +169,13 @@ namespace AlbionOnlineCraftingCalculator
                                     setting.Spec.Add(0);
                                 }
                             }
+                            else if(setting.Name.Contains("SPEC_resources"))
+                            {
+                                for (int k = 0; k < 5; k++)
+                                {
+                                    setting.Spec.Add(0);
+                                }
+                            }
                             else
                             {
 
@@ -163,6 +202,201 @@ namespace AlbionOnlineCraftingCalculator
         }
 
 
+        // Deze functie doet het niet goed.
+        // Deze moet opnieuw.
+
+        public static AlbionCraftingInformation CalculateProfitV3(SimplifiedItemV2 simplifiedItemV2, int feePerHundredNutrition, double SellorderTaxPercentage, string sellingLocation, string buyingLocation, List<SimplifiedItemV2> simplifiedItemsV2, Journalitem journalitem, double returnRate)
+        {
+
+            Debug.WriteLine("Calculating Profit " + returnRate.ToString());
+
+
+            AlbionCraftingInformation albionCraftingInformation = new AlbionCraftingInformation();
+
+            List<ResourceReturnModel> resourceAmountReturnedPerResource = new List<ResourceReturnModel>();
+
+            const double nutritionUsedPerItemValue = 0.001125;
+            List<double> fameMultiplier = new List<double> { 0, 1.5, 7.5, 22.5, 90, 270, 645, 1395 };
+
+
+            // Total amount of money, invested into crafting the particular item, artifacts included.
+            double _ResourceSilverInvested = 0;
+            // Total amount of money, returned from crafting the particular item. (Artefacts invluded)
+            double _ResourceSilverReturned = 0;
+            // Value in silver, of bare costs for the ingredients of the item.
+            double _ResourceSilverCost = 0;
+
+            double resourceCountTotal = 0;
+
+            // Fame
+            double baseFameGained = 0;
+            double artefactFameGained = 0;
+            double enchantmentFameGained = 0;
+
+
+
+            double nutritionCost = 0;
+
+
+
+            for (int i = 0; i < simplifiedItemV2.Craftingrequirements[0].Craftresources.Count; i++)
+            {
+
+                resourceCountTotal += simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Count;
+
+
+                double resourceCount = simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Count;
+                // price is the price of that resource.
+                int resourcePrice = GetPriceFromAlbionDataModel(FindSimplifiedItem(simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename, simplifiedItemsV2), buyingLocation);
+                Debug.WriteLine($"ResourcePrice:{resourcePrice} from {buyingLocation}");
+
+
+                double resourceSilverInvested = resourceCount * resourcePrice;
+                double resourceReturnCount = 0;
+                if (simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ARTEFACT") || simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ROYALs"))
+                {
+                    resourceReturnCount = 0;
+                }
+                else
+                {
+                    resourceReturnCount = Math.Floor(resourceCount * returnRate);
+                    Debug.WriteLine($"ReturnCount: {resourceReturnCount}");
+                }
+
+
+                double resourceSilverReturned = resourcePrice * resourceReturnCount;
+                double resourceSilverCost = resourceSilverInvested - resourceSilverReturned;
+                Debug.WriteLine($"SilverCost after return:{resourceSilverCost}");
+
+                _ResourceSilverInvested += resourceSilverInvested;
+                _ResourceSilverReturned += resourceSilverReturned;
+                _ResourceSilverCost += resourceSilverCost;
+
+                resourceAmountReturnedPerResource.Add(new ResourceReturnModel() { UniqueName = simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename, Count = (int)resourceReturnCount });
+
+
+                ////////////////////////////////////////////////////
+                ///
+                ///   If there is an artefact, or royal token involved,
+                ///
+                ////////////////////////////////////////////////////
+                if (simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ARTEFACT") || simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ROYALs"))
+                {
+                    // No aditional nutritionCosts needed
+                    if (simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ARTEFACT"))
+                    {
+                        artefactFameGained += 500;
+                    }
+                    else if (simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename.Contains("ROYAL"))
+                    {
+                        if (simplifiedItemV2.Tier < 6)
+                        {
+                            artefactFameGained += (2.5 * resourceCountTotal * (simplifiedItemV2.Tier - 3));
+                        }
+                        else
+                        {
+                            artefactFameGained += (2.5 * resourceCountTotal * 4);
+                        }
+                    }
+                }
+                else
+                {
+                    double itemValue = FindSimplifiedItem(simplifiedItemV2.Craftingrequirements[0].Craftresources[i].Uniquename, simplifiedItemsV2).Itemvalue;
+                    int amount = simplifiedItemV2.Craftingrequirements[0].Craftresources[0].Count;
+                    nutritionCost += (double)(itemValue * amount * nutritionUsedPerItemValue * feePerHundredNutrition);
+                }
+
+
+
+
+            }
+
+            //Debug.WriteLine($"Rss Silver for : {simplifiedItemV2.Uniquename}");
+
+            //Debug.WriteLine($"Rss Silver in : {_ResourceSilverInvested}");
+            //Debug.WriteLine($"Rss Silver returned : {_ResourceSilverReturned}");
+            //Debug.WriteLine($"Rss Silver cost : {_ResourceSilverCost}");
+
+
+
+            ////////////////////////////////////////////////////
+            ///
+            ///   Calculate the value, for putting up the sell order for the endproduct.
+            ///
+            ////////////////////////////////////////////////////
+            ///\
+            ///
+            double endProductPrice = GetPriceFromAlbionDataModel(simplifiedItemV2, sellingLocation);
+
+            if (simplifiedItemV2.Craftingrequirements[0].Amountcrafted > 0)
+            {
+                endProductPrice = endProductPrice * simplifiedItemV2.Craftingrequirements[0].Amountcrafted;
+            }
+
+            double sellOrderPrice = Math.Floor(endProductPrice * SellorderTaxPercentage);
+
+
+            ////////////////////////////////////////////////////
+            ///
+            ///   Calculate the totalFameGained,
+            ///   wich is being used for the journal calculation below
+            ////////////////////////////////////////////////////
+
+            baseFameGained += resourceCountTotal * fameMultiplier[simplifiedItemV2.Tier - 1];
+
+            if (simplifiedItemV2.Enchantment != 0)
+            {
+                enchantmentFameGained += (simplifiedItemV2.Enchantment * (baseFameGained - (7.5 * resourceCountTotal)));
+            }
+
+            double totalFameGained = artefactFameGained + enchantmentFameGained + baseFameGained;
+
+
+
+            ////////////////////////////////////////////////////
+            ///
+            ///   Calculate the amount of silver generated with filling the journal.
+            ///
+            ////////////////////////////////////////////////////
+            ///
+            if (journalitem != null)
+            {
+                double maxFame = journalitem.Maxfame;
+                double percentageFilled = (totalFameGained / maxFame);
+                double journalPrice = GetPriceFromItemsList(simplifiedItemsV2, journalitem.Uniquename, buyingLocation);
+                //Debug.WriteLine($"Price for {journalitem.Uniquename} in calculation method:{journalPrice}");
+                double journalFilledPercentageValue = journalPrice * percentageFilled;
+
+                albionCraftingInformation.Journal.JournalFullPrice = journalPrice;
+                albionCraftingInformation.Journal.JournalFilledPercentage = percentageFilled;
+                albionCraftingInformation.Journal.JournalFilledPercentageValue = journalFilledPercentageValue;
+            }
+
+
+            albionCraftingInformation.Resources.ResourceSilverInvested = _ResourceSilverInvested;
+            albionCraftingInformation.Resources.ResourceSilverReturn = _ResourceSilverReturned;
+            albionCraftingInformation.Resources.ResourceSilverCost = _ResourceSilverCost;
+           
+
+            albionCraftingInformation.Resources.ResourceReturnModels = resourceAmountReturnedPerResource;
+
+            albionCraftingInformation.EndproductSellingPrice = endProductPrice;
+
+            albionCraftingInformation.SellorderCost = sellOrderPrice;
+            if(journalitem != null)
+            {
+                albionCraftingInformation.CalculateProfit(true);
+
+            }
+            else
+            {
+                albionCraftingInformation.CalculateProfit(false);
+
+            }
+
+
+            return albionCraftingInformation;
+        }
 
         public static AlbionCraftingInformation CalculateProfitV2(SimplifiedItemV2 simplifiedItemV2, int feePerHundredNutrition, double SellorderTax, string location, List<SimplifiedItemV2> simplifiedItemsV2, Journalitem journalitem, double returnRate)
         {
@@ -273,18 +507,18 @@ namespace AlbionOnlineCraftingCalculator
             ////////////////////////////////////////////////////
             ///\
             ///
-            int endProductPrice = GetPriceFromAlbionDataModel(simplifiedItemV2, location);
+            double endProductPrice = GetPriceFromAlbionDataModel(simplifiedItemV2, location);
 
             if (simplifiedItemV2.Craftingrequirements[0].Amountcrafted > 0)
             {
                 endProductPrice = endProductPrice * simplifiedItemV2.Craftingrequirements[0].Amountcrafted;
             }
-           
+
             double sellOrderPrice = Math.Floor(endProductPrice * SellorderTax);
 
-           
-                Debug.WriteLine($"Sellorder: {endProductPrice} * {SellorderTax} = {sellOrderPrice}");
-            
+
+            //Debug.WriteLine($"Sellorder: {endProductPrice} * {SellorderTax} = {sellOrderPrice}");
+
 
             ////////////////////////////////////////////////////
             ///
@@ -317,7 +551,7 @@ namespace AlbionOnlineCraftingCalculator
                 //Debug.WriteLine($"Price for {journalitem.Uniquename} in calculation method:{journalPrice}");
                 double journalFilledPercentageValue = journalPrice * percentageFilled;
 
-                albionCraftingInformation.Journal.JournalPrice = journalPrice;
+                albionCraftingInformation.Journal.JournalFullPrice = journalPrice;
                 albionCraftingInformation.Journal.JournalFilledPercentage = percentageFilled;
                 albionCraftingInformation.Journal.JournalFilledPercentageValue = journalFilledPercentageValue;
             }
@@ -331,7 +565,7 @@ namespace AlbionOnlineCraftingCalculator
             albionCraftingInformation.NutritionCost = nutritionCost;
             albionCraftingInformation.SellorderCost = sellOrderPrice;
 
-            albionCraftingInformation.Resources.ResourceCount = resourceCountTotal;
+            //albionCraftingInformation.Resources.ResourceCount = resourceCountTotal;
             albionCraftingInformation.Resources.ResourceSilverReturn = resourceSilverReturn;
             albionCraftingInformation.Resources.ResourceSilverInvested = resourceSilverInvested;
             albionCraftingInformation.Resources.ResourceSilverCost = resourceSilverCost;
@@ -341,6 +575,13 @@ namespace AlbionOnlineCraftingCalculator
             albionCraftingInformation.Fame.BaseFameGained = baseFameGained;
             albionCraftingInformation.Fame.ArtefactFameGained = artefactFameGained;
             albionCraftingInformation.Fame.EnchantmentFameGained = enchantmentFameGained;
+
+
+            albionCraftingInformation.EndproductSellingPrice = endProductPrice;
+
+
+            albionCraftingInformation.CalculateProfit(true);
+
 
 
 
@@ -1073,7 +1314,7 @@ namespace AlbionOnlineCraftingCalculator
 
                 if (!priceModelExisted)
                 {
-                    //Debug.WriteLine($"{simplifiedItemV2.Uniquename} had known locations, but a new one came in");
+                    Debug.WriteLine($"{simplifiedItemV2.Uniquename} had known locations, but a new one came in");
 
                     if (!(albionDataPriceModel.SellPriceMin == 0))
                     {
@@ -1090,7 +1331,7 @@ namespace AlbionOnlineCraftingCalculator
                 if (!(albionDataPriceModel.SellPriceMin == 0))
                 {
                     simplifiedItemV2.AlbionDataPriceModelsV2.Add(albionDataPriceModel);
-                    //Debug.WriteLine($"New datapricemodel: {simplifiedItemV2.Uniquename} {albionDataPriceModel.SellPriceMin}");
+                    Debug.WriteLine($"New datapricemodel: {simplifiedItemV2.Uniquename} {albionDataPriceModel.SellPriceMin}");
 
                 }
 
@@ -1368,6 +1609,76 @@ namespace AlbionOnlineCraftingCalculator
         }
 
 
+        public static double CalculateFocusCostsForResources(string uniqueName, List<FocusCostCalculcationModel> focusCostCalculcationModels)
+        {
+
+            double totalFocusCostEfficiency = 0;
+            double baseFocusCost = 0;
+            double newFocusCost = 0;
+
+            //Debug.WriteLine($"received {focusCostCalculcationModels.Count} focusCostCalculationModels ");
+
+            // uniqueName is the item we are going to calculate it for.
+
+
+            // THe list contains all the items we are also going to look at.
+            // Because those specialisation counts aswell for the item in question.
+            for (int i = 0; i < focusCostCalculcationModels.Count; i++)
+            {
+
+
+                if (focusCostCalculcationModels[i].UniqueName == uniqueName)
+                {
+                    //Debug.WriteLine($"Found uniqueItem{uniqueName}");
+
+
+                    baseFocusCost = focusCostCalculcationModels[i].FocusCost;
+                    // Add up the maintreelevel. wich gives 30 for all items.
+                    //totalFocusCostEfficiency += (mainTreeLevel * 30);
+
+
+                    //Debug.WriteLine($"totalFocusCostEfficiency: {totalFocusCostEfficiency}");
+
+
+                    // We found the item we want to calculate it for.
+                    for (int j = 0; j < focusCostCalculcationModels.Count; j++)
+                    {
+                        if (focusCostCalculcationModels[j].UniqueName == uniqueName)
+                        {
+                            totalFocusCostEfficiency += (focusCostCalculcationModels[j].UserSpecInput * 250);
+                            totalFocusCostEfficiency += (focusCostCalculcationModels[j].UserSpecInput * 30);
+
+
+                        }
+                        else
+                        {
+                            // Now we are going to add up all the item spec.
+                            
+                            
+                                totalFocusCostEfficiency += (focusCostCalculcationModels[j].UserSpecInput * 30);
+                            
+                        }
+
+                    }
+                    //Debug.WriteLine($"totalFocusCostEfficiency: {totalFocusCostEfficiency}");
+
+                    // Now we have the total focusCostefficiency points.
+
+                    // Lets calculate the new focus cost value.
+                    //Debug.WriteLine($"FocusCostEfficiency:{totalFocusCostEfficiency}");
+                    //Debug.WriteLine($"baseCost:{baseFocusCost}");
+
+
+                    newFocusCost = baseFocusCost * Math.Pow(0.5, totalFocusCostEfficiency / 10000);
+                    //Debug.WriteLine($"newFocusCost{newFocusCost}");
+                }
+            }
+
+
+
+
+            return Math.Ceiling(newFocusCost);
+        }
 
 
 
@@ -1649,21 +1960,28 @@ namespace AlbionOnlineCraftingCalculator
                 var item = myDeserializedClass.Items.Weapon[i];
                 if (item.Tier > 3 && item.Enchantments != null)
                 {
-                    simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
 
-                    for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
+                    if (!(item.Uniquename.Contains("IRONGAUNTLETS")))
                     {
-                        if (!item.Uniquename.Contains("DEBUG"))
+
+
+
+                        simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename, Tier = item.Tier, Craftingrequirements = item.Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = 0 });
+
+                        for (int j = 0; j < item.Enchantments.Enchantment.Count; j++)
                         {
+                            if (!item.Uniquename.Contains("DEBUG"))
+                            {
 
 
-                            //if (item.Uniquename.Contains("BOW")) { Debug.WriteLine($"{item.Uniquename} requires {item.Enchantments.Enchantment[j].Craftingrequirements[0].Craftresources.Count} resources to craft"); }
+                                //if (item.Uniquename.Contains("BOW")) { Debug.WriteLine($"{item.Uniquename} requires {item.Enchantments.Enchantment[j].Craftingrequirements[0].Craftresources.Count} resources to craft"); }
 
-                            simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
-
-
+                                simplifiedItemsV2.Add(new SimplifiedItemV2() { Uniquename = item.Uniquename + $"@{(j + 1).ToString()}", Tier = item.Tier, Craftingrequirements = item.Enchantments.Enchantment[j].Craftingrequirements, Shopcategory = item.Shopcategory, Shopsubcategory = item.Shopsubcategory1, Enchantment = j + 1 });
 
 
+
+
+                            }
                         }
                     }
                 }

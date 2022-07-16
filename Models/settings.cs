@@ -10,10 +10,19 @@ namespace AlbionOnlineCraftingCalculator
 
     public class Setting
     {
-        public List< UserSpecInput> UserSpecInput  { get; set; }  
+        public List< UserSpecInput> UserSpecInput  { get; set; }
+
+        //public string JwtToken { get; set; } = "";
+
+        public LicenseInformation LicenseInformation { get; set; } = new LicenseInformation();
     }
 
-
+    public class LicenseInformation
+    {
+       // public string JwtToken { get; set; } = "";
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
 
 
     public class UserSpecInput
